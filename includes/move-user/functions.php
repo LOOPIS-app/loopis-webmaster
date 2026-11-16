@@ -8,8 +8,8 @@
  */
 
 // Prevent direct access
-if (!defined('ABSPATH')) { 
-    exit; 
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 add_action('admin_post_loopis_move_user', 'loopis_handle_move_user');
@@ -213,7 +213,7 @@ function move_post(
 
     switch_to_blog( $source_blog_id );
     $migration_ids = get_post_meta($post_id, 'migration_ids',true);
-    
+
     if (is_array($migration_ids)){
         if(array_key_exists( $target_blog_id, $migration_ids )){
             $new_post_id = (int) $migration_ids[$target_blog_id];
@@ -249,7 +249,7 @@ function move_post(
                 );
             }
         }
-        
+
         $post_data = array(
             'post_author'           => (int) $source_post->post_author,
             'post_date'             =>  current_time( 'mysql' ),
@@ -317,25 +317,25 @@ function move_post(
         );
         add_admin_comment('<p class="migrated">
 		    🚛 Denna annons har flyttats från <a href="' . esc_url(add_query_arg('p',(int) $post_id, get_home_url( (int) $source_blog_id, '/' ))) .'">'. get_blog_option( $source_blog_id, 'blogname' ) .'</a></p>', $new_post_id, 4);
-  
+
 
 
         $target_post = get_post($new_post_id);
         if ( $target_post instanceof WP_Post && ! empty( $url_map ) ) {
-        	$updated_content = str_replace(
-        		array_keys( $url_map ),
-        		array_values( $url_map ),
-        		$target_post->post_content
-        	);
+            $updated_content = str_replace(
+                array_keys( $url_map ),
+                array_values( $url_map ),
+                $target_post->post_content
+            );
 
-        	if ( $updated_content !== $target_post->post_content ) {
-        		wp_update_post(
-        			array(
-        				'ID'           => $new_post_id,
-        				'post_content' => $updated_content,
-        			)
-        		);
-        	}
+            if ( $updated_content !== $target_post->post_content ) {
+                wp_update_post(
+                    array(
+                        'ID'           => $new_post_id,
+                        'post_content' => $updated_content,
+                    )
+                );
+            }
         }
 
         foreach ( $terms_by_taxonomy as $taxonomy => $terms ) {
@@ -418,13 +418,13 @@ function move_post(
 function revive_post(int $post_id, string $description = ''){
     // Set post meta
     $timestamp = current_time('Y-m-d H:i:s');
-	wp_set_object_terms( $post_id, null, 'category' ); 
+	wp_set_object_terms( $post_id, null, 'category' );
 	wp_set_object_terms( $post_id, 'old', 'category' );
 	update_post_meta($post_id,'remove_date', null);
     $author_id = get_post_field( 'post_author', $post_id );
 	update_post_meta($post_id,'extend_date', current_time('Y-m-d H:i:s'));
     loopis_ledger_add_post('submitted', $author_id , $post_id, ['timestamp' => $timestamp, 'description' => $description, 'clovers'=>0]);
-	
+
 	// Leave comment by Nisse
     add_admin_comment ('<p class="unremove">🧟 Annons migrerad tillbaka.</p>', $post_id, 4);
 }
@@ -433,22 +433,22 @@ function revive_post(int $post_id, string $description = ''){
 function remove_post(int $post_id, string $description = '',  int $blog_id = 1, int $new_post_id = 1) {
     // Set post meta
 	$timestamp = current_time('Y-m-d H:i:s');
-	wp_set_object_terms( $post_id, null, 'category' ); 
+	wp_set_object_terms( $post_id, null, 'category' );
 	wp_set_object_terms( $post_id, 'removed', 'category' );
 	$author_id = get_post_field( 'post_author', $post_id );
 	$fetcher_id = (int) get_post_meta($post_id,'fetcher', true);
-	
+
 	update_post_meta($post_id,'fetcher', null);
     update_post_meta($post_id,'participants', null);
 	update_post_meta($post_id,'remove_date', $timestamp);
 
 	// Update ledger
 	loopis_ledger_add_post('removed', $author_id , $post_id, ['timestamp' => $timestamp, 'description' => $description]);
-	
+
 	// Leave comment by author
 	add_admin_comment('<p class="migrated">
 		❌ Denna annons har flyttats till <a href="' . esc_url(add_query_arg('p',(int) $new_post_id, get_home_url( (int) $blog_id, '/' ))) .'">'. get_blog_option( $blog_id, 'blogname' ) .'</a></p>', $post_id, 4);
-  
+
 }
 
 

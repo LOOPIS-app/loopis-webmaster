@@ -38,7 +38,7 @@ function loopis_move_user_page() {
 	?>
 	<div class="wrap">
 		<h1>Move User</h1>
-        
+
 
 		<?php if ( isset( $_GET['moved'] ) && '1' === $_GET['moved'] ) : ?>
 			<div class="notice notice-success is-dismissible">
@@ -70,11 +70,11 @@ function loopis_move_user_page() {
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="loopis_move_user">
 
-			<?php 
-            wp_nonce_field( 'loopis_move_user_action', 'loopis_move_user_nonce' ); 
+			<?php
+            wp_nonce_field( 'loopis_move_user_action', 'loopis_move_user_nonce' );
             $member_users = get_users( array( 'blog_id' => 0 ) );
             ?>
-                
+
 			<table class="form-table">
 				<tr>
 					<th scope="row">
@@ -109,7 +109,7 @@ function loopis_move_user_page() {
 						</select>
 					</td>
 				</tr>
-							
+
 				<tr>
 					<th scope="row">
 						<label for="target_blog">Till område</label>
@@ -117,7 +117,7 @@ function loopis_move_user_page() {
 					<td>
 						<select name="target_blog" id="target_blog" required>
 							<option value="">Välj område</option>
-							
+
 							<?php foreach ( $site_ids as $site_id ) : ?>
 								<option value="<?php echo esc_attr( $site_id ); ?>">
 									 <?php echo esc_html( get_blog_option( $site_id, 'blogname' )); ?>
