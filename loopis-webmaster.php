@@ -27,8 +27,11 @@ function loopis_webmaster_load_tools() {
         return;
     }
 
-    require_once __DIR__ . '/includes/image-migration/functions.php';
-    require_once __DIR__ . '/includes/image-migration/page.php';
+    require_once __DIR__ . '/includes/image-conversion/functions.php';
+    require_once __DIR__ . '/includes/image-conversion/page.php';
+    require_once __DIR__ . '/includes/image-cleanup/functions.php';
+    require_once __DIR__ . '/includes/image-cleanup/page.php';
+    require_once __DIR__ . '/includes/image-conversion/batched-scan.php';
     require_once __DIR__ . '/includes/move-user/functions.php';
     require_once __DIR__ . '/includes/move-user/page.php';
     require_once __DIR__ . '/includes/qr-codes/functions.php';
@@ -39,7 +42,7 @@ function loopis_webmaster_load_tools() {
 /** Register the Webmaster menu and its tools. */
 function loopis_webmaster_menu() {
     add_menu_page(
-        'LOOPIS Image Migration',
+        'LOOPIS Webmaster',
         'Webmaster',
         'manage_options',
         'loopis-webmaster',
@@ -48,11 +51,19 @@ function loopis_webmaster_menu() {
     );
     add_submenu_page(
         'loopis-webmaster',
-        'LOOPIS Image Migration',
-        'Image Migration',
+        'LOOPIS Image Conversion',
+        'Image Conversion',
         'manage_options',
-        'loopis-image-migration',
-        'loopis_image_migration_render_page'
+        'loopis-image-conversion',
+        'loopis_image_conversion_render_page'
+    );
+    add_submenu_page(
+        'loopis-webmaster',
+        'LOOPIS Image Cleanup',
+        'Image Cleanup',
+        'manage_options',
+        'loopis-image-cleanup',
+        'loopis_image_cleanup_render_page'
     );
     add_submenu_page(
         'loopis-webmaster',
